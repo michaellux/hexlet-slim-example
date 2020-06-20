@@ -21,8 +21,11 @@ $app->get('/', function ($request, $response) {
     // return $response->write('Welcome to Slim!');
 });
 
-$app->get('/users', function ($request, $response) {
-    return $response->write('GET /users');
+$users = ['mike', 'mishel', 'adel', 'keks', 'kamila'];
+
+$app->get('/users', function ($request, $response) use ($users){
+    $params = ['users' => $users];
+    return $this->get('renderer')->render($response, 'users/index.phtml', $params);
 });
 
 $app->get('/users/{id}', function ($request, $response, $args) {
