@@ -24,7 +24,8 @@ $app->get('/', function ($request, $response) {
 $users = ['mike', 'mishel', 'adel', 'keks', 'kamila'];
 
 $app->get('/users', function ($request, $response) use ($users){
-    $params = ['users' => $users];
+    $term = $request->getQueryParam('term');
+    $params = ['users' => $users, 'term' => $term];
     return $this->get('renderer')->render($response, 'users/index.phtml', $params);
 });
 

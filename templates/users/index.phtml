@@ -1,8 +1,17 @@
+<form action="/users" method="get">
+    <input type="search" name="term" value="<?= htmlspecialchars($term) ?>" />
+    <input type="submit" value="Search" />
+</form>
+
 <table>
     <?php foreach ($users as $user) : ?>
         <tr>
             <td>
-                <?= $user ?>
+                <?php 
+                if (strpos($user, $term) !== false) :
+                    echo ($user);
+                endif; 
+                ?>
             </td>
         </tr>
     <?php endforeach ?>
