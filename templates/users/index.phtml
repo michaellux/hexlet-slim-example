@@ -2,15 +2,14 @@
     <input type="search" name="term" value="<?= htmlspecialchars($term) ?>" />
     <input type="submit" value="Search" />
 </form>
-
 <table>
     <?php foreach ($users as $user) : ?>
         <tr>
             <td>
-                <?php 
-                if (strpos($user, $term) !== false) :
-                    echo ($user);
-                endif; 
+                <?php
+                if (strpos($user['nickname'], $term) !== false) :
+                    echo ($user['nickname']);
+                endif;
                 ?>
             </td>
         </tr>
