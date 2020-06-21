@@ -2,10 +2,10 @@
     <div>
         <label>
             Никнейм
-            <input type="text" name="user[nickname]" value="<?= htmlspecialchars($user['name']) ?>">
+            <input type="text" name="user[nickname]" value="<?= htmlspecialchars($user['nickname']) ?>">
         </label>
-        <?php if (isset($errors['name'])) : ?>
-            <div><?= $errors['name'] ?></div>
+        <?php if (isset($errors['nickname'])) : ?>
+            <div><?= $errors['nickname'] ?></div>
         <?php endif ?>
     </div>
     <div>
