@@ -15,3 +15,27 @@
         </tr>
     <?php endforeach ?>
 </table>
+<h1>Зарегистрированные пользователи</h1>
+<table>
+    <tr>
+        <?php foreach ($users[0] as $key => $value) : ?>
+            <td>
+                <h3><?= $key   ?></h3>
+            </td>
+        <?php endforeach ?>
+    </tr>
+    <?php foreach ($users as $user) : ?>
+
+        <tr>
+            <td>
+                <p><?= $user['id']   ?></p>
+            </td>
+            <td>
+                <p><?= $user['nickname']   ?></p>
+            </td>
+            <td>
+                <p><?= $user['email']   ?></p>
+            </td>
+        </tr>
+    <?php endforeach ?>
+</table>
