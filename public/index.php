@@ -21,12 +21,32 @@ $app->get('/', function ($request, $response) {
     // return $response->write('Welcome to Slim!');
 });
 
-$users = ['mike', 'mishel', 'adel', 'keks', 'kamila'];
+$file = __DIR__ . '/../data/users.json';
+$users = json_decode(file_get_contents($file), true);
 
 $app->get('/users', function ($request, $response) use ($users){
     $term = $request->getQueryParam('term');
     $params = ['users' => $users, 'term' => $term];
     return $this->get('renderer')->render($response, 'users/index.phtml', $params);
+});
+
+$app->post('/users', function ($request, $response) use ($file, $users){
+    $user = $request->getParsedBodyParam('user');
+    $params = [
+            'id' => $user['id'], 'nickname' => $user['nickname'], 'email' => $user['email']
+    ];
+    $users[] = $params;
+    $data = json_encode($users);
+    $currentFileData = "{$data}";
+    file_put_contents($file, $currentFileData);
+    return $response->withRedirect('/users');
+});
+
+$app->get('/users/new', function ($request, $response) {
+    $params = [
+        'user' => ['nickname' => '', 'email' => ''],
+    ];
+    return $this->get('renderer')->render($response, "users/new.phtml", $params);
 });
 
 $app->get('/users/{id}', function ($request, $response, $args) {
@@ -35,10 +55,6 @@ $app->get('/users/{id}', function ($request, $response, $args) {
     // $this доступен внутри анонимной функции благодаря https://php.net/manual/ru/closure.bindto.php
     // $this в Slim это контейнер зависимостей
     return $this->get('renderer')->render($response, 'users/show.phtml', $params);
-});
-
-$app->post('/users', function ($request, $response) {
-    return $response->withStatus(302);
 });
 
 $app->get('/courses/{id}', function ($request, $response, array $args) {
