@@ -6,10 +6,15 @@ require __DIR__ . '/../vendor/autoload.php';
 use Slim\Factory\AppFactory;
 use DI\Container;
 
+session_start();
+
 $container = new Container();
 $container->set('renderer', function () {
     // Параметром передается базовая директория в которой будут храниться шаблоны
     return new \Slim\Views\PhpRenderer(__DIR__ . '/../templates');
+});
+$container->set('flash', function () {
+    return new \Slim\Flash\Messages();
 });
 $app = AppFactory::createFromContainer($container);
 $app->addErrorMiddleware(true, true, true);
@@ -33,6 +38,8 @@ $users = json_decode(file_get_contents($file), true);
 $app->get('/users', function ($request, $response) use ($users){
     $term = $request->getQueryParam('term');
     $params = ['users' => $users, 'term' => $term];
+    $messages = $this->get('flash')->getMessages();
+    print_r("<h1>{$messages['success'][0]}</h1>");
     return $this->get('renderer')->render($response, 'users/index.phtml', $params);
 })->setName('users');
 
@@ -45,6 +52,7 @@ $app->post('/users', function ($request, $response) use ($file, $users){
     $data = json_encode($users);
     $currentFileData = "{$data}";
     file_put_contents($file, $currentFileData);
+    $this->get('flash')->addMessage('success', 'Новый пользователь создан');
     return $response->withRedirect('/users');
 })->setName('users');
 
