@@ -8,7 +8,7 @@
             <td>
                 <?php
                 if (strpos($user['nickname'], $term) !== false) :
-                    echo ($user['nickname']);
+                    echo (htmlspecialchars($user['nickname']));
                 endif;
                 ?>
             </td>
@@ -28,13 +28,13 @@
 
         <tr>
             <td>
-                <p><?= $user['id']   ?></p>
+                <p><?= htmlspecialchars($user['id'])   ?></p>
             </td>
             <td>
-                <p><?= $user['nickname']   ?></p>
+                <p><?= htmlspecialchars($user['nickname'])   ?></p>
             </td>
             <td>
-                <p><?= $user['email']   ?></p>
+                <p><?= htmlspecialchars($user['email'])   ?></p>
             </td>
         </tr>
     <?php endforeach ?>
