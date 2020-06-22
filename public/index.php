@@ -55,12 +55,17 @@ $app->get('/users/new', function ($request, $response) {
     return $this->get('renderer')->render($response, "users/new.phtml", $params);
 });
 
-$app->get('/users/{id}', function ($request, $response, $args) {
-    $params = ['id' => $args['id'], 'nickname' => 'user-' . $args['id']];
-    // Указанный путь считается относительно базовой директории для шаблонов, заданной на этапе конфигурации
-    // $this доступен внутри анонимной функции благодаря https://php.net/manual/ru/closure.bindto.php
-    // $this в Slim это контейнер зависимостей
-    return $this->get('renderer')->render($response, 'users/show.phtml', $params);
+$app->get('/users/{id}', function ($request, $response, $args) use ($users) {
+    $params = ['id' => $args['id'], 'users' => $users];
+
+    foreach ($users as $user) {
+        if (in_array($params['id'], $user)) {
+            $params['nickname'] = $user['nickname'];
+            return $this->get('renderer')->render($response, 'users/show.phtml', $params);
+        }
+    }
+
+    return $response->write("Такого пользователя не существует.")->withStatus(404);
 })->setName('user');
 
 $app->get('/courses/{id}', function ($request, $response, array $args) {
