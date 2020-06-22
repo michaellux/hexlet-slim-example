@@ -14,8 +14,14 @@ $container->set('renderer', function () {
 $app = AppFactory::createFromContainer($container);
 $app->addErrorMiddleware(true, true, true);
 
-$app->get('/', function ($request, $response) {
+$router = $app->getRouteCollector()->getRouteParser();
+
+$app->get('/', function ($request, $response) use ($router) {
     $response->getBody()->write('Welcome to Slim!');
+
+    $router->urlFor('users'); // /users
+    $router->urlFor('user', ['id' => 4]); // /users/4
+
     return $response;
     // Благодаря пакету slim/http этот же код можно записать короче
     // return $response->write('Welcome to Slim!');
@@ -28,7 +34,7 @@ $app->get('/users', function ($request, $response) use ($users){
     $term = $request->getQueryParam('term');
     $params = ['users' => $users, 'term' => $term];
     return $this->get('renderer')->render($response, 'users/index.phtml', $params);
-});
+})->setName('users');
 
 $app->post('/users', function ($request, $response) use ($file, $users){
     $user = $request->getParsedBodyParam('user');
@@ -40,7 +46,7 @@ $app->post('/users', function ($request, $response) use ($file, $users){
     $currentFileData = "{$data}";
     file_put_contents($file, $currentFileData);
     return $response->withRedirect('/users');
-});
+})->setName('users');
 
 $app->get('/users/new', function ($request, $response) {
     $params = [
@@ -55,11 +61,11 @@ $app->get('/users/{id}', function ($request, $response, $args) {
     // $this доступен внутри анонимной функции благодаря https://php.net/manual/ru/closure.bindto.php
     // $this в Slim это контейнер зависимостей
     return $this->get('renderer')->render($response, 'users/show.phtml', $params);
-});
+})->setName('user');
 
 $app->get('/courses/{id}', function ($request, $response, array $args) {
     $id = $args['id'];
     return $response->write("Course id: {$id}");
-});
+})->setName('course');
 
 $app->run();
