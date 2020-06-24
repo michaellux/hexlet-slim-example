@@ -10,6 +10,24 @@
     </div>
     <div>
         <label>
+            First Name
+            <input type="text" required name="user[firstName]" value="<?= htmlspecialchars($user['firstName']) ?>">
+        </label>
+        <?php if (isset($errors['firstName'])) : ?>
+            <div><?= $errors['firstName'] ?></div>
+        <?php endif ?>
+    </div>
+    <div>
+        <label>
+            Last Name
+            <input type="text" required name="user[lastName]" value="<?= htmlspecialchars($user['lastName']) ?>">
+        </label>
+        <?php if (isset($errors['lastName'])) : ?>
+            <div><?= $errors['lastName'] ?></div>
+        <?php endif ?>
+    </div>
+    <div>
+        <label>
             Email
             <input type="email" required name="user[email]" value="<?= htmlspecialchars($user['email']) ?>">
         </label>

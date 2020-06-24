@@ -46,7 +46,7 @@ $app->get('/users', function ($request, $response) use ($users){
 $app->post('/users', function ($request, $response) use ($file, $users){
     $user = $request->getParsedBodyParam('user');
     $params = [
-            'id' => $user['id'], 'nickname' => $user['nickname'], 'email' => $user['email']
+            'id' => $user['id'], 'nickname' => $user['nickname'], 'firstName' => $user['firstName'], 'lastName' => $user['lastName'], 'email' => $user['email']
     ];
     $users[] = $params;
     $data = json_encode($users);
@@ -58,7 +58,7 @@ $app->post('/users', function ($request, $response) use ($file, $users){
 
 $app->get('/users/new', function ($request, $response) {
     $params = [
-        'user' => ['nickname' => '', 'email' => ''],
+        'user' => ['nickname' => '', 'firstName' => '', 'lastName' => '', 'email' => ''],
     ];
     return $this->get('renderer')->render($response, "users/new.phtml", $params);
 });
