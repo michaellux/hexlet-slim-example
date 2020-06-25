@@ -96,6 +96,21 @@ $app->patch('/users/{id}', function ($request, $response, array $args) use ($use
     return $response->write("Такого пользователя не существует.")->withStatus(404);
 });
 
+$app->delete('/users/{id}', function ($request, $response, array $args) use ($users, $file, $router) {
+    $params = ['id' => $args['id']];
+    $key = array_search($params['id'], array_column($users, 'id'));
+    if ($key !== false) {
+        $updatedListOfusers = array_filter($users, fn ($user) => $user['id'] !== $params['id']);
+        $data = json_encode($updatedListOfusers);
+        $currentFileData = "{$data}";
+        file_put_contents($file, $currentFileData);
+        $this->get('flash')->addMessage('success', 'Пользователь удалён');
+        return $response->withRedirect($router->urlFor('users'));
+    }
+
+    return $response->write("Такого пользователя не существует.")->withStatus(404);
+});
+
 $app->get('/users/{id}/edit', function ($request, $response, array $args) use ($users){
     $params = ['id' => $args['id']];
 
@@ -107,6 +122,16 @@ $app->get('/users/{id}/edit', function ($request, $response, array $args) use ($
     }
     return $response->write("Такого пользователя не существует.")->withStatus(404);
 })->setName('editUser');
+
+$app->get('/users/{id}/delete', function ($request, $response, array $args) use ($users, $router) {
+    $linkToListOfUsers = $router->urlFor('user',['id' => $args['id']]);
+    $params = ['id' => $args['id'], 'link' => $linkToListOfUsers];
+    $key = array_search($params['id'], array_column($users, 'id'));
+    if ($key !== false) {
+        return $this->get('renderer')->render($response, 'users/delete.phtml', $params);
+    }
+    return $response->write("Такого пользователя не существует.")->withStatus(404);
+})->setName('deleteUser');
 
 $app->get('/courses/{id}', function ($request, $response, array $args) {
     $id = $args['id'];
