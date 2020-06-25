@@ -4,6 +4,7 @@
 require __DIR__ . '/../vendor/autoload.php';
 
 use Slim\Factory\AppFactory;
+use Slim\Middleware\MethodOverrideMiddleware;
 use DI\Container;
 
 session_start();
@@ -18,7 +19,7 @@ $container->set('flash', function () {
 });
 $app = AppFactory::createFromContainer($container);
 $app->addErrorMiddleware(true, true, true);
-
+$app->add(MethodOverrideMiddleware::class);
 $router = $app->getRouteCollector()->getRouteParser();
 
 $app->get('/', function ($request, $response) use ($router) {
@@ -75,6 +76,37 @@ $app->get('/users/{id}', function ($request, $response, $args) use ($users) {
 
     return $response->write("Такого пользователя не существует.")->withStatus(404);
 })->setName('user');
+
+$app->patch('/users/{id}', function ($request, $response, array $args) use ($users, $file, $router) {
+    $params = ['id' => $args['id'], 'users' => $users];
+    $dataForm = $request->getParsedBodyParam('user');
+    $key = array_search($params['id'], array_column($users, 'id'));
+    if ($key !== false) {
+        $users[$key]['nickname'] = $dataForm['nickname'];
+        $users[$key]['firstName'] = $dataForm['firstName'];
+        $users[$key]['lastName'] = $dataForm['lastName'];
+        $users[$key]['email'] = $dataForm['email'];
+        $data = json_encode($users);
+        $currentFileData = "{$data}";
+        file_put_contents($file, $currentFileData);
+        $this->get('flash')->addMessage('success', 'Профиль пользователя обновлён');
+        return $response->withRedirect('/users');
+    }
+
+    return $response->write("Такого пользователя не существует.")->withStatus(404);
+});
+
+$app->get('/users/{id}/edit', function ($request, $response, array $args) use ($users){
+    $params = ['id' => $args['id']];
+
+    foreach ($users as $user) {
+        if (in_array($params['id'], $user)) {
+            $params['user'] = $user;
+            return $this->get('renderer')->render($response, 'users/edit.phtml', $params);
+        }
+    }
+    return $response->write("Такого пользователя не существует.")->withStatus(404);
+})->setName('editUser');
 
 $app->get('/courses/{id}', function ($request, $response, array $args) {
     $id = $args['id'];
