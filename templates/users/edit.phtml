@@ -1,0 +1,46 @@
+<form action="/users/<?= htmlspecialchars($user['id']) ?>" method="post">
+    <input type="hidden" name="_METHOD" value="PATCH">
+    <div>
+        <label>
+            Никнейм
+            <input type="text" name="user[nickname]" value="<?= htmlspecialchars($user['nickname'] ?? '') ?>">
+        </label>
+        <?php if (isset($errors['nickname'])) : ?>
+            <div><?= $errors['nickname'] ?></div>
+        <?php endif ?>
+    </div>
+    <div>
+        <label>
+            First Name
+            <input type="text" required name="user[firstName]" value="<?= htmlspecialchars($user['firstName'] ?? '') ?>">
+        </label>
+        <?php if (isset($errors['firstName'])) : ?>
+            <div><?= $errors['firstName'] ?></div>
+        <?php endif ?>
+    </div>
+    <div>
+        <label>
+            Last Name
+            <input type="text" required name="user[lastName]" value="<?= htmlspecialchars($user['lastName'] ?? '') ?>">
+        </label>
+        <?php if (isset($errors['lastName'])) : ?>
+            <div><?= $errors['lastName'] ?></div>
+        <?php endif ?>
+    </div>
+    <div>
+        <label>
+            Email
+            <input type="email" required name="user[email]" value="<?= htmlspecialchars($user['email'] ?? '') ?>">
+        </label>
+        <?php if (isset($errors['email'])) : ?>
+            <div><?= $errors['email'] ?></div>
+        <?php endif ?>
+    </div>
+    <div>
+        <label>
+            id
+            <input type="text" name="user[id]" readonly value="<?= htmlspecialchars($user['id'] ?? '') ?>">
+        </label>
+    </div>
+    <input type="submit" value="Update">
+</form>
