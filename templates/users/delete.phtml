@@ -1,0 +1,9 @@
+<h1>You want delete user with id:<?= htmlspecialchars($id) ?> </h1>
+<h2>Are You sure?</h2>
+<form action="<?= htmlspecialchars($link) ?>" method="post">
+    <input type="hidden" name="_METHOD" value="DELETE">
+    <input type="submit" value="Yes, delete it!">
+</form>
+<form action="<?= htmlspecialchars($link) ?>" method="get">
+    <input type="submit" value="No!">
+</form>
